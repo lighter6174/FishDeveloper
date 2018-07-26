@@ -13,6 +13,10 @@ public class ClickObject : MonoBehaviour
     public int addtimemoney = 1;
     public float time = 0;
     public float leftmoney;
+    public int flag = 0;//标注点击事件
+    public int settingflag = 0;
+    public int soundflag = 0;
+    public Button[] buttonArray;
     public GameObject Board;
     public GameObject Money;
     public GameObject Type;
@@ -21,34 +25,44 @@ public class ClickObject : MonoBehaviour
     public GameObject ShowCost;
     public GameObject ShowCostcost;
     public GameObject NoUpgrade;
-    public int flag = 0;//标注点击事件
+    public GameObject AD;
+    public GameObject Sound;
+    public GameObject NoSound;
+    
     //public List<Button> btton_All = new List<Button>();
+
     void Start ()
     {
         Button btn1 = GameObject.Find("MainScreen/Length").GetComponent<Button>();
         Button btn2 = GameObject.Find("MainScreen/Strength").GetComponent<Button>();
         Button btn3 = GameObject.Find("MainScreen/Setting").GetComponent<Button>();
         Button btn4 = GameObject.Find("MainScreen/Offline").GetComponent<Button>();
-        Button btn5 = GameObject.Find("MainScreen/AD").GetComponent<Button>();
+        //Button btn5 = GameObject.Find("MainScreen/AD").GetComponent<Button>();
+        Button btn5 = AD.GetComponent<Button>();
         Button btn6 = GameObject.Find("MainScreen/Setting").GetComponent<Button>();
         Button btn7 = GameObject.Find("MainScreen/Side/Upgrade").GetComponent<Button>();
-        ShowCostMoney(144);
+        //Button btn8 = GameObject.Find("MainScreen/Sound").GetComponent<Button>();
+        Button btn8 = Sound.GetComponent<Button>();
         ShowMoney(currentmoney);
         btn1.onClick.AddListener(AddLength);
         btn2.onClick.AddListener(AddFish);
+        btn3.onClick.AddListener(Setting);
         btn4.onClick.AddListener(AddOfflineMoney);
         btn7.onClick.AddListener(Changed);
+        btn8.onClick.AddListener(ControSound);
         InvokeRepeating("AddTimeMoney", 60, 60);
     }
     void AddLength()
     {
+        PlaySound();
         Color color = new Color(230 / 255f, 86 / 255f, 78 / 255f, 255 / 255f);
         Bounder.GetComponent<Image>().color = color;
         flag = 1;
         ShowLength(currentlength);
     }
     void AddFish()
-    {       
+    {
+        PlaySound();
         Color color = new Color(95/255f,172/255f,225/255f,255/255f);
         Bounder.GetComponent<Image>().color = color;
         flag = 2;
@@ -56,6 +70,7 @@ public class ClickObject : MonoBehaviour
     }
     void AddOfflineMoney()
     {
+        PlaySound();
         Color color = new Color(128/255f,216/255f,107/255f,255/255f);
         Bounder.GetComponent<Image>().color = color;
         flag = 3;
@@ -127,6 +142,12 @@ public class ClickObject : MonoBehaviour
     }
     void Changed()
     {
+        if (soundflag == 0)
+        {
+            SoundManager.Instance.PlaySoundEffect("FM_upgrade");
+
+        }
+        SoundManager.Instance.PlaySoundEffect("FM_upgrade");
         if (flag == 1 || flag == 0)
         {
             
@@ -209,5 +230,56 @@ public class ClickObject : MonoBehaviour
             }
         }
     }
-    
+    void Setting()
+    {
+        PlaySound();
+        if (settingflag == 0)
+        {
+            AD.gameObject.SetActive(true);
+            //Sound.gameObject.SetActive(true);
+            if (soundflag == 0)
+            {
+                NoSound.gameObject.SetActive(false);
+            }
+            
+            settingflag = 1;
+            return;
+        }
+        else
+        {
+            AD.gameObject.SetActive(false);
+            //Sound.gameObject.SetActive(false);
+            if (soundflag == 0)
+            {
+                NoSound.gameObject.SetActive(false);
+            }
+            settingflag = 0;
+            return;
+        }
+    }
+    void PlaySound()
+    {
+        if (soundflag == 0)
+        {
+            SoundManager.Instance.PlaySoundEffect("FM_click");
+
+        }
+
+    }
+    void ControSound()
+    {
+        if (soundflag == 0)
+        { 
+            NoSound.gameObject.SetActive(true);
+            soundflag = 1;
+            return;
+        }
+        else
+        {
+            NoSound.gameObject.SetActive(false);
+            soundflag = 0;
+            return;
+        }
+    }
+
 }
